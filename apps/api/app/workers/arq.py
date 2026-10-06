@@ -1,34 +1,31 @@
-"""ARQ worker entrypoint (Phase 1: placeholder, no jobs yet).
+"""ARQ worker entrypoint. run_worker signature verified against installed arq."""
 
-Phase 2 will register pipeline tasks here. Kept so `docker compose up`
-brings up a worker service that stays alive and healthy.
-"""
+from arq import run_worker
 
-import asyncio
+from app.core.logging import configure_logging, get_logger
+from app.workers.queue import redis_settings
+from app.workers.tasks import process_reel
+
+configure_logging()
+log = get_logger()
 
 
 async def startup(ctx: dict) -> None:
-    print("worker startup (phase-1 placeholder)")
+    log.info("worker startup", functions=["process_reel"])
 
 
 async def shutdown(ctx: dict) -> None:
-    print("worker shutdown")
+    log.info("worker shutdown")
 
 
 class WorkerSettings:
-    functions: list = []
+    functions = [process_reel]
+    redis_settings = redis_settings()
     on_startup = startup
     on_shutdown = shutdown
+    max_tries = 3
+    job_timeout = 600
 
 
 if __name__ == "__main__":
-    # Keep the container alive without ARQ jobs in Phase 1.
-    async def _idle() -> None:
-        await startup({})
-        try:
-            while True:
-                await asyncio.sleep(3600)
-        except asyncio.CancelledError:
-            await shutdown({})
-
-    asyncio.run(_idle())
+    run_worker(WorkerSettings)  # type: ignore[arg-type]
