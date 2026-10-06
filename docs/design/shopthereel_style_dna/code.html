@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_tab" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;600&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-tertiary-container": "#2b384f", "surface-bright": "#3a3936", "on-surface": "#e5e2dd", "surface-raised": "#1E1A15", "on-primary": "#402d0d", "error": "#D9695F", "tertiary-container": "#94a1bd", "secondary": "#e0c29a", "border": "#2E261C", "secondary-fixed": "#fddeb5", "tertiary": "#bac7e4", "surface-dim": "#141311", "warning": "#D9A441", "bg": "#090907", "on-error-container": "#ffdad6", "surface": "#141210", "amber-soft": "rgba(185, 157, 115, 0.15)", "on-secondary-fixed": "#281901", "outline-variant": "#4d463b", "surface-container": "#20201d", "brown-soft": "rgba(108, 86, 54, 0.20)", "on-secondary": "#3f2d11", "text-disabled": "#5E574B", "success": "#8FB573", "on-primary-fixed": "#281900", "on-secondary-fixed-variant": "#584325", "primary-fixed-dim": "#e0c295", "on-tertiary-fixed-variant": "#3a475f", "primary-fixed": "#fedeaf", "tertiary-fixed": "#d7e3ff", "amber-pressed": "#A38762", "surface-tint": "#e0c295", "on-tertiary-fixed": "#0e1c32", "inverse-primary": "#725b36", "secondary-container": "#584325", "surface-container-high": "#2a2a27", "primary": "#e0c295", "surface-container-lowest": "#0e0e0c", "on-error": "#690005", "on-primary-fixed-variant": "#584321", "primary-container": "#b99d73", "on-primary-container": "#483413", "background": "#141311", "error-container": "#93000a", "on-background": "#e5e2dd", "on-surface-variant": "#d0c5b7", "surface-container-highest": "#353532", "surface-container-low": "#1c1c19", "inverse-on-surface": "#31302d", "outline": "#998f83", "secondary-fixed-dim": "#e0c29a", "surface-variant": "#353532", "tertiary-fixed-dim": "#bac7e4", "text-primary": "#F2EBDD", "text-secondary": "#A89F8E", "inverse-surface": "#e5e2dd", "on-secondary-container": "#cdb18a", "on-tertiary": "#243148", "on-amber": "#090907" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "gutter": "0.75rem", "margin": "1.25rem", "space-xl": "1.25rem", "space-xs": "0.25rem", "space-sm": "0.5rem", "space-md": "0.75rem", "space-lg": "1rem" }, "fontFamily": { "body-strong": ["Inter"], "label": ["Inter"], "display": ["Fraunces"], "body": ["Inter"], "title-md": ["Fraunces"], "caption": ["Inter"], "label-caps": ["Inter"], "price": ["Inter"], "display-mobile": ["Fraunces"], "title-lg": ["Fraunces"] }, "fontSize": { "body-strong": ["15px", { "lineHeight": "22px", "fontWeight": "600" }], "label": ["13px", { "lineHeight": "18px", "letterSpacing": "0.2px", "fontWeight": "500" }], "display": ["32px", { "lineHeight": "38px", "fontWeight": "600" }], "body": ["15px", { "lineHeight": "22px", "fontWeight": "400" }], "title-md": ["20px", { "lineHeight": "26px", "fontWeight": "500" }], "caption": ["12px", { "lineHeight": "16px", "fontWeight": "400" }], "label-caps": ["11px", { "lineHeight": "14px", "letterSpacing": "1.0px", "fontWeight": "600" }], "price": ["16px", { "lineHeight": "20px", "fontWeight": "600" }], "display-mobile": ["28px", { "lineHeight": "34px", "fontWeight": "600" }], "title-lg": ["24px", { "lineHeight": "30px", "fontWeight": "600" }] } } } };</script><style>@layer base{html,body{width:100%;margin:0;padding:0;background-color:#090907;}body{overscroll-behavior:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-bg text-text-primary font-body flex flex-col min-h-screen selection:bg-primary-container selection:text-on-primary-container"><header class="fixed top-0 w-full z-50 pt-safe bg-bg/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.4)]"><div class="h-16 px-margin flex items-center justify-between"><div class="flex items-center gap-space-md min-w-0"><img alt="ShopTheReel Logo" class="h-8 w-auto object-contain flex-shrink-0" src="https://lh3.googleusercontent.com/aida/AEtjO1VYHl9B3Vu2rHwtKi0EpZ8HPr-Scxv92UZhF68avZoR8jPm91iU80M6yx3UJ9dUoJOvvD7rz4ZlH4cOl8c9Pg_oEzEue3QwpDH-SFE8ktSS-gVYEWeNbnJWq5U26Ttpqrd5bpEXXRKE1QBOBrKmCKZgRvR_YhbGQg263O_jOzDwmRxkxb0yvVyzncHOnDM71sTqbNQOjK6M4zyF6syFX80VRPEAwRQ7stOglVtbydJt9Ohs7I-WgZWMq2w"/><div class="flex flex-col min-w-0"><span class="font-label-caps text-label-caps uppercase text-primary tracking-widest leading-none">ShopTheReel</span><span class="font-title-md text-title-md text-text-primary truncate tracking-tight">User Profile</span></div></div><div class="flex items-center gap-space-sm"><button aria-label="Notifications" class="w-11 h-11 flex items-center justify-center rounded-full text-text-secondary hover:text-text-primary transition-colors"><span class="material-symbols-outlined text-[22px]">notifications</span></button><a aria-label="Profile" class="w-11 h-11 flex items-center justify-center rounded-full" data-path="profile" href="#"><img alt="Profile" class="w-8 h-8 rounded-full object-cover ring-1 ring-border" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDG-MzZi90CgrsrRkaB271W98GuCWbjr8uQb-sDKPFXdQo9ek6DvtQ1BmhVqVvwYT9DOuyvdgHZEuQc_qYquCPn7ZL1SL0oWzc_ul-1mkK9pgFfh9APodT5Up-nsIUAuK-zmuj-C4hzDGHe_ez9a3RzyuZPVFAoyl56zgOgbkZ6Li9QCPT15BQqBF9Jm71yoyLsgTgaZFMf6q5INxzuD_QkuyC-K7-MWkXtHC1VkvF8d7miUDw5UTw-"/></a></div></div></header><main class="flex-1 flex flex-col relative w-full pt-16 pb-28 bg-bg"><div class="flex flex-col w-full px-margin space-y-space-lg pb-6">
+<!-- Profile Header Card -->
+<section class="bg-surface rounded-xl p-space-lg shadow-xl relative overflow-hidden flex flex-col items-center text-center">
+<div class="absolute top-0 right-0 w-48 h-48 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
+<div class="relative mb-space-md">
+<div class="w-24 h-24 rounded-full overflow-hidden p-0.5 bg-gradient-to-tr from-primary-container via-secondary to-primary-container">
+<img class="w-full h-full object-cover rounded-full" data-alt="Chic editorial close-up portrait of South Asian woman Ananya Sharma with sleek parted hair, warm amber natural lighting, wearing a charcoal minimalist cashmere collar, filmic mood, dark luxury palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDEA8qt4eTAQegi4oPDKDS3pbRRV13seVJD0FpRDOvV3Sh60xvfhsS3rADYWWYu-gTfsDUvgU-E2SElKLaLv3nmAj7mPZTnpDb2azTxwN3p12deTOf4p25NOuNcDLj9KSbcBVkp4am2C4mVPEW50UlZuokWiJAt39b6JlK7iTQVqYI3lyVTHwwaZ_DFV5zRYEpJXygs2y3YAkaySO0N7uVV13_gIyArr2rvuYvVxouMuUBRl-t4rc0j"/>
+</div>
+<span class="absolute bottom-0 right-1 bg-surface-raised text-primary text-[10px] w-6 h-6 rounded-full flex items-center justify-center shadow-md">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+</span>
+</div>
+<div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-soft text-primary font-label-caps text-label-caps tracking-widest uppercase mb-space-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse"></span>
+      Curated Style Member
+    </div>
+<h1 class="font-title-lg text-title-lg text-text-primary tracking-tight mt-1">Ananya Sharma</h1>
+<div class="flex items-center gap-1 text-text-secondary font-label text-label mt-0.5">
+<span class="material-symbols-outlined text-[15px] text-text-secondary">location_on</span>
+      Mumbai, IN
+    </div>
+</section>
+<!-- Metrics Ticker Ribbon -->
+<section class="grid grid-cols-3 gap-gutter">
+<div class="bg-surface rounded-xl p-space-sm flex flex-col items-center justify-center text-center shadow-sm">
+<span class="font-display-mobile text-display-mobile text-text-primary font-semibold leading-none mb-1">18</span>
+<span class="font-label-caps text-label-caps text-text-secondary uppercase text-[10px]">Reels Analyzed</span>
+</div>
+<div class="bg-surface rounded-xl p-space-sm flex flex-col items-center justify-center text-center shadow-sm">
+<span class="font-display-mobile text-display-mobile text-primary font-semibold leading-none mb-1">42</span>
+<span class="font-label-caps text-label-caps text-text-secondary uppercase text-[10px]">Saved Outfits</span>
+</div>
+<div class="bg-surface rounded-xl p-space-sm flex flex-col items-center justify-center text-center shadow-sm">
+<span class="font-display-mobile text-display-mobile text-success font-semibold leading-none mb-1">₹14.2k</span>
+<span class="font-label-caps text-label-caps text-text-secondary uppercase text-[10px] leading-tight">Saved via Budget</span>
+</div>
+</section>
+<!-- Personalization Settings Main Module -->
+<div class="space-y-space-lg">
+<!-- Gender Toggle Section -->
+<section class="bg-surface rounded-xl p-space-lg shadow-sm space-y-space-md">
+<div class="flex items-center justify-between">
+<label class="font-body-strong text-body-strong text-text-primary">Department Focus</label>
+<span class="font-label-caps text-label-caps text-primary uppercase">Active Fit</span>
+</div>
+<div class="grid grid-cols-3 gap-1 bg-surface-dim p-1 rounded-xl">
+<button class="py-2.5 px-3 rounded-lg bg-secondary-container text-primary font-label text-label flex items-center justify-center gap-1.5 shadow-sm transition-all" data-active="true" type="button">
+<span class="material-symbols-outlined text-[16px]">female</span>
+          Women
+        </button>
+<button class="py-2.5 px-3 rounded-lg text-text-secondary hover:text-text-primary font-label text-label flex items-center justify-center gap-1.5 transition-all" type="button">
+<span class="material-symbols-outlined text-[16px]">male</span>
+          Men
+        </button>
+<button class="py-2.5 px-3 rounded-lg text-text-secondary hover:text-text-primary font-label text-label flex items-center justify-center gap-1.5 transition-all" type="button">
+<span class="material-symbols-outlined text-[16px]">all_inclusive</span>
+          Unisex
+        </button>
+</div>
+</section>
+<!-- Sizing Matrix Section -->
+<section class="bg-surface rounded-xl p-space-lg shadow-sm space-y-space-md">
+<div class="flex items-center justify-between">
+<div>
+<h2 class="font-body-strong text-body-strong text-text-primary">Preferred Sizing</h2>
+<p class="font-caption text-caption text-text-secondary">Used for real-time reel stock alerts</p>
+</div>
+<span class="material-symbols-outlined text-primary-container text-[20px]">straighten</span>
+</div>
+<div class="space-y-space-md">
+<!-- Tops -->
+<div class="flex items-center justify-between">
+<span class="font-label text-label text-text-secondary w-16">Tops</span>
+<div class="flex gap-space-sm">
+<button class="h-9 min-w-[42px] px-3 rounded-full bg-secondary-container text-primary font-body-strong text-body-strong shadow-sm" type="button">S</button>
+<button class="h-9 min-w-[42px] px-3 rounded-full bg-surface-container text-text-secondary font-label text-label" type="button">M</button>
+<button class="h-9 min-w-[42px] px-3 rounded-full bg-surface-container text-text-secondary font-label text-label" type="button">L</button>
+</div>
+</div>
+<!-- Bottoms -->
+<div class="flex items-center justify-between">
+<span class="font-label text-label text-text-secondary w-16">Bottoms</span>
+<div class="flex gap-space-sm">
+<button class="h-9 min-w-[42px] px-3 rounded-full bg-surface-container text-text-secondary font-label text-label" type="button">26</button>
+<button class="h-9 min-w-[42px] px-3 rounded-full bg-secondary-container text-primary font-body-strong text-body-strong shadow-sm" type="button">28</button>
+<button class="h-9 min-w-[42px] px-3 rounded-full bg-surface-container text-text-secondary font-label text-label" type="button">30</button>
+</div>
+</div>
+<!-- Shoes -->
+<div class="flex items-center justify-between">
+<span class="font-label text-label text-text-secondary w-16">Shoes</span>
+<div class="flex gap-space-sm">
+<button class="h-9 min-w-[42px] px-3 rounded-full bg-surface-container text-text-secondary font-label text-label" type="button">EU 37</button>
+<button class="h-9 min-w-[42px] px-3 rounded-full bg-secondary-container text-primary font-body-strong text-body-strong shadow-sm" type="button">EU 38</button>
+<button class="h-9 min-w-[42px] px-3 rounded-full bg-surface-container text-text-secondary font-label text-label" type="button">EU 39</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Budget Profile Slider Section -->
+<section class="bg-surface rounded-xl p-space-lg shadow-sm space-y-space-md">
+<div class="flex items-start justify-between">
+<div>
+<span class="font-label-caps text-label-caps uppercase text-primary tracking-wider">AI Optimizer</span>
+<h2 class="font-body-strong text-body-strong text-text-primary">Typical Outfit Target</h2>
+</div>
+<div class="text-right">
+<span class="font-title-md text-title-md text-primary font-semibold" id="sliderValueText">₹7,500</span>
+<span class="block font-caption text-caption text-text-secondary">per ensemble</span>
+</div>
+</div>
+<div class="py-2">
+<div class="relative w-full flex items-center">
+<input class="w-full h-2 rounded-lg appearance-none cursor-pointer bg-surface-dim accent-primary focus:outline-none" id="budgetRange" max="12000" min="3000" step="500" type="range" value="7500"/>
+</div>
+<div class="flex justify-between items-center text-text-secondary font-caption text-caption mt-2">
+<span>₹3,000</span>
+<span class="text-primary-container font-label-caps text-[10px] uppercase tracking-wider">Sweet Spot Tier</span>
+<span>₹12,000</span>
+</div>
+</div>
+</section>
+<!-- Brand Preferences Section -->
+<section class="bg-surface rounded-xl p-space-lg shadow-sm space-y-space-md">
+<div class="flex items-center justify-between">
+<div>
+<h2 class="font-body-strong text-body-strong text-text-primary">Retailer Preferences</h2>
+<p class="font-caption text-caption text-text-secondary">Prioritized in Reel match recommendations</p>
+</div>
+<span class="material-symbols-outlined text-text-secondary text-[20px]">storefront</span>
+</div>
+<div class="flex flex-wrap gap-space-sm" id="brandChips">
+<button class="h-9 px-4 rounded-full bg-secondary-container text-primary font-label text-label flex items-center gap-1.5 shadow-sm transition-transform active:scale-95" type="button">
+<span class="material-symbols-outlined text-[16px] text-primary">check</span>
+          Zara
+        </button>
+<button class="h-9 px-4 rounded-full bg-secondary-container text-primary font-label text-label flex items-center gap-1.5 shadow-sm transition-transform active:scale-95" type="button">
+<span class="material-symbols-outlined text-[16px] text-primary">check</span>
+          H&amp;M
+        </button>
+<button class="h-9 px-4 rounded-full bg-surface-container text-text-secondary hover:text-text-primary font-label text-label flex items-center gap-1.5 transition-transform active:scale-95" type="button">
+<span class="material-symbols-outlined text-[16px] text-text-secondary">add</span>
+          Roadster
+        </button>
+<button class="h-9 px-4 rounded-full bg-secondary-container text-primary font-label text-label flex items-center gap-1.5 shadow-sm transition-transform active:scale-95" type="button">
+<span class="material-symbols-outlined text-[16px] text-primary">check</span>
+          FabIndia
+        </button>
+<button class="h-9 px-4 rounded-full bg-secondary-container text-primary font-label text-label flex items-center gap-1.5 shadow-sm transition-transform active:scale-95" type="button">
+<span class="material-symbols-outlined text-[16px] text-primary">check</span>
+          Mango
+        </button>
+<button class="h-9 px-4 rounded-full bg-surface-container text-text-secondary hover:text-text-primary font-label text-label flex items-center gap-1.5 transition-transform active:scale-95" type="button">
+<span class="material-symbols-outlined text-[16px] text-text-secondary">add</span>
+          Westside
+        </button>
+<button class="h-9 px-4 rounded-full bg-secondary-container text-primary font-label text-label flex items-center gap-1.5 shadow-sm transition-transform active:scale-95" type="button">
+<span class="material-symbols-outlined text-[16px] text-primary">check</span>
+          Uniqlo
+        </button>
+</div>
+</section>
+<!-- Favorite Style Aesthetics Section -->
+<section class="bg-surface rounded-xl p-space-lg shadow-sm space-y-space-md">
+<div class="flex items-center justify-between">
+<div>
+<h2 class="font-body-strong text-body-strong text-text-primary">Curated Aesthetics</h2>
+<p class="font-caption text-caption text-text-secondary">Influences visual search lookbook matching</p>
+</div>
+<span class="material-symbols-outlined text-text-secondary text-[20px]">palette</span>
+</div>
+<div class="flex flex-wrap gap-space-sm" id="aestheticChips">
+<button class="h-9 px-4 rounded-full bg-secondary-container text-primary font-label text-label flex items-center gap-1.5 shadow-sm" type="button">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+          Quiet Luxury
+        </button>
+<button class="h-9 px-4 rounded-full bg-secondary-container text-primary font-label text-label flex items-center gap-1.5 shadow-sm" type="button">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+          Dark Academia
+        </button>
+<button class="h-9 px-4 rounded-full bg-secondary-container text-primary font-label text-label flex items-center gap-1.5 shadow-sm" type="button">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+          Minimalist Linen
+        </button>
+<button class="h-9 px-4 rounded-full bg-secondary-container text-primary font-label text-label flex items-center gap-1.5 shadow-sm" type="button">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+          Old Money
+        </button>
+</div>
+</section>
+<!-- Save & Sync Action Bar -->
+<div class="pt-2">
+<button class="w-full h-[52px] rounded-xl bg-primary-container text-on-amber font-body-strong text-body-strong flex items-center justify-center gap-2 shadow-lg active:bg-amber-pressed transition-transform active:scale-[0.99]" id="saveButton" type="button">
+<span class="material-symbols-outlined text-[20px]">auto_fix_high</span>
+        Update Style DNA
+      </button>
+</div>
+</div>
+</div>
+<script>
+  (function() {
+    const slider = document.getElementById('budgetRange');
+    const label = document.getElementById('sliderValueText');
+    const saveBtn = document.getElementById('saveButton');
+
+    if (slider && label) {
+      slider.addEventListener('input', function(e) {
+        const val = Number(e.target.value);
+        label.textContent = '₹' + val.toLocaleString('en-IN');
+      });
+    }
+
+    if (saveBtn) {
+      saveBtn.addEventListener('click', function() {
+        const originalText = saveBtn.innerHTML;
+        saveBtn.innerHTML = '<span class="material-symbols-outlined text-[20px] animate-spin">refresh</span> Syncing DNA...';
+        saveBtn.disabled = true;
+        setTimeout(() => {
+          saveBtn.innerHTML = '<span class="material-symbols-outlined text-[20px]">done</span> Saved Successfully';
+          saveBtn.classList.remove('bg-primary-container', 'text-on-amber');
+          saveBtn.classList.add('bg-success', 'text-surface-dim');
+          setTimeout(() => {
+            saveBtn.innerHTML = originalText;
+            saveBtn.classList.remove('bg-success', 'text-surface-dim');
+            saveBtn.classList.add('bg-primary-container', 'text-on-amber');
+            saveBtn.disabled = false;
+          }, 1800);
+        }, 700);
+      });
+    }
+  })();
+</script></main><nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface-raised/95 backdrop-blur-xl shadow-[0_-4px_24px_rgba(0,0,0,0.5)]" data-active-classes="text-primary-container font-semibold"><div class="relative flex items-center justify-between h-16 px-margin max-w-md mx-auto"><a class="flex flex-col items-center justify-center w-14 h-full gap-0.5 text-text-secondary hover:text-text-primary transition-colors" data-path="home-feed" href="#"><span class="material-symbols-outlined text-[24px]">home</span><span class="font-label-caps text-label-caps uppercase">Home</span></a><a class="flex flex-col items-center justify-center w-14 h-full gap-0.5 text-text-secondary hover:text-text-primary transition-colors" data-path="saved-looks" href="#"><span class="material-symbols-outlined text-[24px]">bookmark</span><span class="font-label-caps text-label-caps uppercase">Looks</span></a><div class="relative -top-5 flex items-center justify-center"><a aria-label="Analyze Reel" class="w-14 h-14 rounded-full bg-primary-container text-on-amber flex items-center justify-center shadow-[0_8px_20px_rgba(185,157,115,0.35)] active:bg-amber-pressed active:scale-95 transition-all" data-path="detect-reel" href="#"><span class="material-symbols-outlined text-[28px]">video_call</span></a></div><a class="flex flex-col items-center justify-center w-14 h-full gap-0.5 text-text-secondary hover:text-text-primary transition-colors" data-path="explore-matches" href="#"><span class="material-symbols-outlined text-[24px]">auto_awesome</span><span class="font-label-caps text-label-caps uppercase">Match</span></a><a aria-current="page" class="flex flex-col items-center justify-center w-14 h-full gap-0.5 transition-colors text-primary-container font-semibold" data-path="user-profile" href="#"><span class="material-symbols-outlined text-[24px]">person</span><span class="font-label-caps text-label-caps uppercase">Profile</span></a></div></nav></body></html>
