@@ -20,6 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v3
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg
       - run: cd apps/api && uv sync --group dev
       - run: cd apps/api && uv run ruff check .
       - run: cd apps/api && uv run mypy app

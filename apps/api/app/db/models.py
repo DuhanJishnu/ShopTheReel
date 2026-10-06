@@ -1,8 +1,8 @@
-"""Phase 1 models: users, profiles, refresh_tokens, reels, reel_stages.
+"""Phase 1+2 models: users, profiles, refresh_tokens, reels, reel_stages,
+frames, detected_items, reel_costs, idempotency_keys.
 
-NOTE: profiles.taste_vec is JSON (nullable list) in Phase 1 so unit tests can run
-on SQLite. Phase 3 will alter it to pgvector vector(768) with HNSW indexes.
-The initial migration enables the pgvector extension for forward compat.
+NOTE: vector columns stay JSON in Phase 2 so unit tests run on SQLite.
+Phase 3 alters taste_vec/embedding columns to pgvector with HNSW indexes.
 """
 
 import uuid
@@ -80,3 +80,52 @@ class ReelStage(Base):
     ended_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     error: Mapped[str | None] = mapped_column(Text, nullable=True)
     metrics: Mapped[dict | None] = mapped_column(JSON().with_variant(JSONB(), "postgresql"), nullable=True)
+
+
+class Frame(Base):
+    __tablename__ = "frames"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
+    reel_id: Mapped[str] = mapped_column(String(36), ForeignKey("reels.id", ondelete="CASCADE"), index=True)
+    idx: Mapped[int] = mapped_column()
+    storage_key: Mapped[str] = mapped_column(Text)
+    sharpness: Mapped[float | None] = mapped_column(nullable=True)
+
+
+class DetectedItem(Base):
+    __tablename__ = "detected_items"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
+    reel_id: Mapped[str] = mapped_column(String(36), ForeignKey("reels.id", ondelete="CASCADE"), index=True)
+    category: Mapped[str] = mapped_column(String(32))
+    subcategory: Mapped[str] = mapped_column(String(128), default="")
+    colours: Mapped[list | None] = mapped_column(JSON().with_variant(JSONB(), "postgresql"), nullable=True)
+    pattern: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    fit: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    material_guess: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    gender_hint: Mapped[str | None] = mapped_column(String(16), nullable=True)
+    style_tags: Mapped[list | None] = mapped_column(JSON().with_variant(JSONB(), "postgresql"), nullable=True)
+    bbox: Mapped[dict | None] = mapped_column(JSON().with_variant(JSONB(), "postgresql"), nullable=True)
+    crop_key: Mapped[str | None] = mapped_column(Text, nullable=True)
+    confidence: Mapped[float] = mapped_column(default=0.0)
+    attribute_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+    embedding: Mapped[list | None] = mapped_column(
+        JSON().with_variant(JSONB(), "postgresql"), nullable=True
+    )  # Phase 2: hashed 512-d JSON; Phase 3: pgvector image_vec
+    suggested: Mapped[bool] = mapped_column(Boolean, default=False)
+
+
+class ReelCost(Base):
+    __tablename__ = "reel_costs"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
+    reel_id: Mapped[str] = mapped_column(String(36), ForeignKey("reels.id", ondelete="CASCADE"), index=True)
+    model: Mapped[str] = mapped_column(String(128))
+    input_tokens: Mapped[int] = mapped_column(default=0)
+    output_tokens: Mapped[int] = mapped_column(default=0)
+    est_cost_inr: Mapped[float | None] = mapped_column(nullable=True)
+
+
+class IdempotencyKey(Base):
+    __tablename__ = "idempotency_keys"
+    key: Mapped[str] = mapped_column(String(64), primary_key=True)
+    user_id: Mapped[str] = mapped_column(String(36), ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
+    reel_id: Mapped[str] = mapped_column(String(36), ForeignKey("reels.id", ondelete="CASCADE"))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
