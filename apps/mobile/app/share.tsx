@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text } from 'react-native';
+import { router } from 'expo-router';
 import * as FileSystem from 'expo-file-system';
 import { Screen } from '../src/components/Screen';
 import { Button } from '../src/components/Button';
@@ -64,8 +65,11 @@ export default function ShareReceiver() {
       const size = info.exists && 'size' in info ? (info.size as number) : 5 * 1024 * 1024;
       const presign = await api.presign(accessToken, { content_type: active.mime, size_bytes: size, kind });
       await uploadFile(presign.upload_url, active.uri, active.mime);
+      const reelKind = kind === 'video' ? 'video' : 'images';
+      const reel = await api.createReel(accessToken, { kind: reelKind, storage_keys: [presign.storage_key] });
+      router.push(`/processing/${reel.id}`);
       setStatus('done');
-      setMessage(`Uploaded to ${presign.storage_key}. Pipeline lands in Phase 2.`);
+      setMessage(`Uploaded to ${presign.storage_key}.`);
     } catch (e) {
       setStatus('error');
       setMessage(e instanceof Error ? e.message : 'Upload failed');

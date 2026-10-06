@@ -29,7 +29,19 @@ export const api = {
       headers: { Authorization: `Bearer ${token}` },
       body: JSON.stringify(body),
     }),
+  createReel: (token: string, body: { kind: 'video' | 'images' | 'link'; storage_keys?: string[]; source_url?: string }) =>
+    req('/v1/reels', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: JSON.stringify(body),
+    }),
+  getReel: (token: string, id: string) =>
+    req(`/v1/reels/${id}`, { method: 'GET', headers: { Authorization: `Bearer ${token}` } }),
+  getItems: (token: string, id: string) =>
+    req(`/v1/reels/${id}/items`, { method: 'GET', headers: { Authorization: `Bearer ${token}` } }),
 };
+
+export const eventsUrl = (id: string) => `${BASE}/v1/reels/${id}/events`;
 
 export async function uploadFile(uploadUrl: string, uri: string, contentType: string): Promise<void> {
   // RN fetch can PUT a blob from a file URI via { uri, type } workaround; keep simple XHR-free approach.
