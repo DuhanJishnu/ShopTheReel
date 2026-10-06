@@ -1,7 +1,9 @@
-"""ObjectStore interface + MinIO (S3-compatible) implementation + fake for tests.
+"""ObjectStore interface + S3-compatible implementation + fake for tests.
 
-Uses boto3 (checked against installed boto3 S3 client API: generate_presigned_url,
-head_bucket, put_object). No invented APIs.
+Local dev runs LocalStack S3 (see docker-compose.yml); prod may use MinIO or any
+S3. Uses boto3 (checked against installed boto3 S3 client API:
+generate_presigned_url, head_bucket, put_object) with path-style addressing so
+custom endpoints resolve inside Docker networks. No invented APIs.
 """
 
 from datetime import UTC, datetime, timedelta
@@ -9,6 +11,7 @@ from typing import Protocol
 from uuid import uuid4
 
 import boto3
+from botocore.config import Config
 from botocore.exceptions import ClientError
 
 from app.core.config import settings
@@ -36,6 +39,7 @@ class MinIOStore:
             aws_access_key_id=settings.s3_access_key,
             aws_secret_access_key=settings.s3_secret_key,
             region_name="us-east-1",
+            config=Config(s3={"addressing_style": "path"}),
         )
         self.bucket = settings.s3_bucket
 

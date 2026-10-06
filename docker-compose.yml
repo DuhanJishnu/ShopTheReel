@@ -25,22 +25,23 @@ services:
       timeout: 5s
       retries: 5
 
-  minio:
-    image: minio/minio:latest
-    command: server /data --console-address ":9001"
+  localstack:
+    # Pinned to v3: newer images require a LOCALSTACK_AUTH_TOKEN (license gate).
+    # S3 API used here is stable across versions; revisit on Phase 5+.
+    image: localstack/localstack:3
     environment:
-      MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin
+      SERVICES: s3
+      DEFAULT_REGION: us-east-1
+      DATA_DIR: /var/lib/localstack/data
     ports:
-      - "9000:9000"
-      - "9001:9001"
+      - "4566:4566"
     volumes:
-      - minio-data:/data
+      - localstack-data:/var/lib/localstack
     healthcheck:
-      test: ["CMD", "mc", "ready", "local"]
+      test: ["CMD", "curl", "-f", "http://localhost:4566/_localstack/health"]
       interval: 10s
       timeout: 5s
-      retries: 3
+      retries: 10
 
   api:
     build:
@@ -49,7 +50,8 @@ services:
     environment:
       DATABASE_URL: postgresql+asyncpg://shop:shop@postgres:5432/shopthereel
       REDIS_URL: redis://redis:6379/0
-      S3_ENDPOINT: http://minio:9000
+      S3_ENDPOINT: http://localstack:4566
+      AWS_EC2_METADATA_DISABLED: "true"
     ports:
       - "8000:8000"
     depends_on:
@@ -57,8 +59,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-      minio:
-        condition: service_started
+      localstack:
+        condition: service_healthy
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000
 
   worker:
@@ -68,7 +70,8 @@ services:
     environment:
       DATABASE_URL: postgresql+asyncpg://shop:shop@postgres:5432/shopthereel
       REDIS_URL: redis://redis:6379/0
-      S3_ENDPOINT: http://minio:9000
+      S3_ENDPOINT: http://localstack:4566
+      AWS_EC2_METADATA_DISABLED: "true"
     depends_on:
       postgres:
         condition: service_healthy
@@ -78,4 +81,4 @@ services:
 
 volumes:
   pgdata:
-  minio-data:
+  localstack-data:
