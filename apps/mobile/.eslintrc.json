@@ -1,0 +1,1 @@
+{ "extends": "expo", "env": { "node": true } }
