@@ -13,9 +13,13 @@ class Settings(BaseSettings):
     s3_bucket: str = "shopthereel"
     s3_access_key: str = "minioadmin"
     s3_secret_key: str = "minioadmin"
+    s3_region: str = "auto"  # Cloudflare R2 requires "auto"; S3/MinIO accept any
     jwt_secret: str = "change-me"
     jwt_access_minutes: int = 15
     jwt_refresh_days: int = 30
+    gemini_api_key: str = ""
+    gemini_vision_model: str = "gemini-3.8-flash"  # 2.5-flash retired (API 404, Oct 2026); names change, keep in env
+    gemini_embed_model: str = "gemini-embedding-001"
     max_video_mb: int = 100
     max_video_seconds: int = 90
 

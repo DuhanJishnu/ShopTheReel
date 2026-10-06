@@ -27,6 +27,9 @@ ALLOWED_CONTENT_TYPES = {
 
 class ObjectStore(Protocol):
     async def presign_put(self, storage_key: str, content_type: str, expires_s: int = 300) -> str: ...
+    async def presign_get(self, storage_key: str, expires_s: int = 300) -> str: ...
+    async def put_bytes(self, storage_key: str, data: bytes, content_type: str) -> None: ...
+    async def download_bytes(self, storage_key: str) -> bytes: ...
     async def ensure_bucket(self) -> None: ...
     async def health(self) -> bool: ...
 
@@ -38,7 +41,7 @@ class MinIOStore:
             endpoint_url=settings.s3_endpoint,
             aws_access_key_id=settings.s3_access_key,
             aws_secret_access_key=settings.s3_secret_key,
-            region_name="us-east-1",
+            region_name=settings.s3_region,
             config=Config(s3={"addressing_style": "path"}),
         )
         self.bucket = settings.s3_bucket
@@ -56,6 +59,20 @@ class MinIOStore:
             ExpiresIn=expires_s,
         )
 
+    async def presign_get(self, storage_key: str, expires_s: int = 300) -> str:
+        return self._client.generate_presigned_url(
+            "get_object",
+            Params={"Bucket": self.bucket, "Key": storage_key},
+            ExpiresIn=expires_s,
+        )
+
+    async def put_bytes(self, storage_key: str, data: bytes, content_type: str) -> None:
+        self._client.put_object(Bucket=self.bucket, Key=storage_key, Body=data, ContentType=content_type)
+
+    async def download_bytes(self, storage_key: str) -> bytes:
+        obj = self._client.get_object(Bucket=self.bucket, Key=storage_key)
+        return obj["Body"].read()
+
     async def health(self) -> bool:
         try:
             self._client.head_bucket(Bucket=self.bucket)
@@ -69,6 +86,7 @@ class FakeStore:
 
     def __init__(self) -> None:
         self.keys: list[str] = []
+        self.blobs: dict[str, bytes] = {}
 
     async def ensure_bucket(self) -> None:
         return None
@@ -76,6 +94,16 @@ class FakeStore:
     async def presign_put(self, storage_key: str, content_type: str, expires_s: int = 300) -> str:
         self.keys.append(storage_key)
         return f"https://fake-s3/{storage_key}?content-type={content_type}"
+
+    async def presign_get(self, storage_key: str, expires_s: int = 300) -> str:
+        return f"https://fake-s3/{storage_key}"
+
+    async def put_bytes(self, storage_key: str, data: bytes, content_type: str) -> None:
+        self.keys.append(storage_key)
+        self.blobs[storage_key] = data
+
+    async def download_bytes(self, storage_key: str) -> bytes:
+        return self.blobs[storage_key]
 
     async def health(self) -> bool:
         return True

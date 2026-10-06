@@ -10,8 +10,9 @@ Expo app --share intent / upload--> FastAPI --> Postgres+pgvector
    |                                  v          S3-compatible storage (videos, crops)
    |                             ARQ worker (Phase 1: placeholder idle)
 ```
-Local storage is LocalStack S3 (the MinIO image is currently unpullable, so compose
-uses LocalStack; the app only needs S3-compatible APIs — prod may use MinIO/any S3).
+Local storage is Cloudflare R2 (S3-compatible, zero egress — the reason for R2).
+Create the bucket + API token in the Cloudflare dashboard and set the four
+`S3_*` vars in `.env` (see `.env.example`). Prod may use R2/MinIO/any S3.
 
 ## One-command local start
 1. `cp .env.example .env` (set `JWT_SECRET`)
