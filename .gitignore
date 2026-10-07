@@ -16,7 +16,10 @@ apps/mobile/ios/
 .env.local
 *.pem
 # Data (dataset + eval media, per spec Section 8/12)
+/archive/
+/data/
 data/raw/
+data/seed-progress.json
 # Build artifacts
 build/
 *.apk

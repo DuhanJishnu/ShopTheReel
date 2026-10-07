@@ -1,10 +1,17 @@
 """Application settings (pydantic-settings). Single source for env config."""
 
+from pathlib import Path
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+# <repo>/apps/api/app/core/config.py -> parents[4] is the repo root, so CLIs
+# find .env no matter which directory they run from. Missing file = defaults
+# (containers get real values as environment variables instead).
+REPO_ROOT = Path(__file__).resolve().parents[4]
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+    model_config = SettingsConfigDict(env_file=REPO_ROOT / ".env", extra="ignore")
 
     app_env: str = "dev"
     database_url: str = "postgresql+asyncpg://shop:shop@localhost:5432/shopthereel"

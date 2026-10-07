@@ -37,6 +37,13 @@ Create the bucket + API token in the Cloudflare dashboard and set the four
 5. App: set `EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID` and `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID` before `npx expo prebuild` / `expo start`.
 6. Flow: app opens Google (`useIdTokenAuthRequest`), sends the ID token to `POST /v1/auth/google`; the API verifies signature + audience + verified email, then creates/links the user and returns our JWT pair. Password login keeps working on linked accounts.
 
+## Catalog (Phase 3)
+- Demo dataset (Kaggle "Fashion Product Images"): download manually into `data/raw/` (`styles.csv` + `images/`) and accept its licence. Demo/educational use only.
+- Seed: `make seed` (reads `data/raw`, resumable via `data/seed-progress.json`). Quick smoke without the dataset: `make seed-demo` (200 synthetic products).
+- Embeddings are deterministic hashed vectors (768-d text, 512-d image) behind `TextEmbedder`/`ImageEmbedder` protocols — zero cost, instant seeding. Swap for Gemini/FashionCLIP later without touching stages.
+- Product vectors live in real pgvector columns on Postgres (`vector(768)`/`vector(512)` + HNSW); unit tests see them as JSON on SQLite via `EmbeddingVector`, while ANN retrieval tests need Postgres: `make test-pg` (uses `shopthereel_test` DB).
+- Outfit (exact tier): `GET /v1/reels/{id}/outfit?tier=exact`. Similar/budget tiers land in Phase 4.
+
 ## Tests / lint
 - `make test` (pytest; SQLite by default, Postgres via `DATABASE_URL_TEST` in CI)
 - `make lint` (ruff + mypy + ESLint + tsc)
