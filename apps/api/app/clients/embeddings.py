@@ -19,15 +19,35 @@ class ImageEmbedder(Protocol):
     def embed(self, image_bytes: bytes) -> list[float]: ...
 
 
+class TextEmbedder(Protocol):
+    dim: int
+
+    def embed_text(self, text: str) -> list[float]: ...
+
+
 class HashedImageEmbedder:
     dim = 512
 
     def embed(self, image_bytes: bytes) -> list[float]:
-        seed = int.from_bytes(hashlib.sha512(image_bytes).digest()[:8], "big")
-        rng = random.Random(seed)
-        vec = [rng.gauss(0.0, 1.0) for _ in range(self.dim)]
-        norm = math.sqrt(sum(v * v for v in vec)) or 1.0
-        return [v / norm for v in vec]
+        return _hash_vec(image_bytes, self.dim)
+
+
+class HashedTextEmbedder:
+    """Deterministic 768-d text vectors (same space convention as Gemini
+    output_dimensionality=768). Swap for the Gemini embedder in Phase 5+."""
+
+    dim = 768
+
+    def embed_text(self, text: str) -> list[float]:
+        return _hash_vec(text.encode(), self.dim)
+
+
+def _hash_vec(data: bytes, dim: int) -> list[float]:
+    seed = int.from_bytes(hashlib.sha512(data).digest()[:8], "big")
+    rng = random.Random(seed)
+    vec = [rng.gauss(0.0, 1.0) for _ in range(dim)]
+    norm = math.sqrt(sum(v * v for v in vec)) or 1.0
+    return [v / norm for v in vec]
 
 
 def cosine(a: list[float], b: list[float]) -> float:
