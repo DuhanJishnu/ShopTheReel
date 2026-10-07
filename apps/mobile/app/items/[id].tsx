@@ -48,7 +48,7 @@ export default function Items() {
   if (state === 'error')
     return (
       <Screen>
-        <Text style={s.title}>Couldn't load items</Text>
+        <Text style={s.title}>Couldn’t load items</Text>
         <Button title="Retry" onPress={load} />
       </Screen>
     );

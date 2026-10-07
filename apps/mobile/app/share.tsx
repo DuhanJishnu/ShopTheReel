@@ -9,13 +9,23 @@ import { colors } from '../src/theme/tokens';
 import { api, uploadFile } from '../src/api/client';
 import { useAuth } from '../src/store/auth';
 
-// NOTE on expo-share-intent (verified 2026-01 docs pattern, not an invented API):
-// The library exposes a `useShareIntent` hook returning { hasShareIntent, shareIntent, resetShareIntent }.
-// `shareIntent` may contain { type: 'media'|'text'|'url'|'file', files: [{ path, mimeType }], text/value }.
-// We defensively handle both old/new shapes and fall back to an empty state when unavailable
-// (e.g. running in Expo Go, which cannot load the native share extension).
+// NOTE on expo-share-intent v8 (types read from the installed package, not invented):
+// `useShareIntent()` returns { isReady, hasShareIntent, shareIntent, resetShareIntent, error }.
+// Normalised files look like { path, mimeType, size, fileName, ... }; native Android
+// shapes use { filePath, contentUri, fileSize } — handled below as fallbacks.
+// Unavailable (e.g. Expo Go, no native share extension) falls back to an empty state.
 // Dev build required: `npx expo prebuild` / EAS dev client. Android-first per human decision.
-function useShareFiles(): { kind: 'video' | 'image'; uri: string; mime: string } | null {
+type SharedFile = {
+  path?: string;
+  uri?: string;
+  filePath?: string;
+  contentUri?: string;
+  mimeType?: string;
+  size?: number | null;
+  fileSize?: number | string | null;
+};
+
+function useShareFiles(): { kind: 'video' | 'image'; uri: string; mime: string; size: number | null } | null {
   try {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const mod = require('expo-share-intent') as Record<string, () => unknown>;
@@ -23,14 +33,16 @@ function useShareFiles(): { kind: 'video' | 'image'; uri: string; mime: string }
     if (!hook) return null;
     const ctx = hook() as {
       hasShareIntent?: boolean;
-      shareIntent?: { type?: string; files?: { path?: string; mimeType?: string; uri?: string }[]; text?: string; value?: string };
+      shareIntent?: { type?: string; files?: SharedFile[] | null; text?: string; value?: string };
     };
     const files = ctx?.shareIntent?.files;
     if (ctx?.hasShareIntent && files?.length) {
       const f = files[0];
-      const uri = f.path ?? f.uri ?? '';
+      const uri = f.path ?? f.filePath ?? f.contentUri ?? f.uri ?? '';
       const mime = f.mimeType ?? 'video/mp4';
-      return { kind: mime.startsWith('image/') ? 'image' : 'video', uri, mime };
+      const rawSize = f.size ?? f.fileSize ?? null;
+      const size = typeof rawSize === 'string' ? parseInt(rawSize, 10) || null : rawSize;
+      return { kind: mime.startsWith('image/') ? 'image' : 'video', uri, mime, size };
     }
     return null;
   } catch {
@@ -45,7 +57,7 @@ export default function ShareReceiver() {
   const [status, setStatus] = useState<'idle' | 'uploading' | 'done' | 'error'>('idle');
   const [message, setMessage] = useState<string | null>(null);
 
-  const active = shared ? { kind: shared.kind, uri: shared.uri, mime: shared.mime } : null;
+  const active = shared ? { kind: shared.kind, uri: shared.uri, mime: shared.mime, size: shared.size } : null;
 
   const analyse = async () => {
     if (!accessToken) {
@@ -61,8 +73,13 @@ export default function ShareReceiver() {
     setStatus('uploading');
     setMessage(null);
     try {
-      const info = await FileSystem.getInfoAsync(active.uri);
-      const size = info.exists && 'size' in info ? (info.size as number) : 5 * 1024 * 1024;
+      // Prefer the size reported by the share intent; fall back to a filesystem stat
+      // (getInfoAsync is legacy API in SDK 57 but still functional).
+      let size = active.size ?? 5 * 1024 * 1024;
+      if (active.size == null) {
+        const info = await FileSystem.getInfoAsync(active.uri);
+        if (info.exists && 'size' in info) size = info.size as number;
+      }
       const presign = await api.presign(accessToken, { content_type: active.mime, size_bytes: size, kind });
       await uploadFile(presign.upload_url, active.uri, active.mime);
       const reelKind = kind === 'video' ? 'video' : 'images';

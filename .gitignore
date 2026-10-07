@@ -8,6 +8,9 @@ venv/
 node_modules/
 .expo/
 dist/
+# Expo prebuild output (regenerated via `npx expo prebuild`, never commit)
+apps/mobile/android/
+apps/mobile/ios/
 # Env / secrets
 .env
 .env.local
