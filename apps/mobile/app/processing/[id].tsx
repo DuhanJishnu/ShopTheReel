@@ -126,7 +126,8 @@ export default function Processing() {
         })}
       </View>
       {!done && !error ? <ActivityIndicator color={colors.amber} /> : null}
-      {done ? <Button title="View detected items" onPress={() => router.push(`/items/${id}`)} /> : null}
+      {done ? <Button title="View outfit" onPress={() => router.push(`/outfit/${id}`)} /> : null}
+      {done ? <Button variant="secondary" title="Detected items" onPress={() => router.push(`/items/${id}`)} /> : null}
       {error ? <Button variant="secondary" title="Back home" onPress={() => router.replace('/')} /> : null}
     </Screen>
   );

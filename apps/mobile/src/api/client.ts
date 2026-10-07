@@ -41,6 +41,8 @@ export const api = {
     req(`/v1/reels/${id}`, { method: 'GET', headers: { Authorization: `Bearer ${token}` } }),
   getItems: (token: string, id: string) =>
     req(`/v1/reels/${id}/items`, { method: 'GET', headers: { Authorization: `Bearer ${token}` } }),
+  getOutfit: (token: string, id: string, tier = 'exact') =>
+    req(`/v1/reels/${id}/outfit?tier=${tier}`, { method: 'GET', headers: { Authorization: `Bearer ${token}` } }),
 };
 
 export const eventsUrl = (id: string) => `${BASE}/v1/reels/${id}/events`;
