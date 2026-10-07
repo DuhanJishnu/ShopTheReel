@@ -8,15 +8,38 @@ Phase 3 alters taste_vec/embedding columns to pgvector with HNSW indexes.
 import uuid
 from datetime import datetime
 
-from sqlalchemy import JSON, Boolean, DateTime, ForeignKey, String, Text
+from sqlalchemy import JSON, Boolean, DateTime, Float, ForeignKey, Integer, Numeric, String, Text
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.types import TypeDecorator
 
 from app.db.base import Base
 
 
 def _uuid() -> str:
     return str(uuid.uuid4())
+
+
+class EmbeddingVector(TypeDecorator):
+    """Embedding column: pgvector vector(n) on Postgres, JSON on SQLite.
+
+    Lets unit tests run on SQLite while production/CI use real ANN types.
+    ANN queries themselves are Postgres-only (see DatasetProvider).
+    """
+
+    impl = JSON
+    cache_ok = True
+
+    def __init__(self, dim: int) -> None:
+        super().__init__()
+        self.dim = dim
+
+    def load_dialect_impl(self, dialect):  # type: ignore[no-untyped-def]
+        if dialect.name == "postgresql":
+            from pgvector.sqlalchemy import Vector
+
+            return Vector(self.dim)
+        return JSON()
 
 
 class User(Base):
@@ -111,6 +134,7 @@ class DetectedItem(Base):
     embedding: Mapped[list | None] = mapped_column(
         JSON().with_variant(JSONB(), "postgresql"), nullable=True
     )  # Phase 2: hashed 512-d JSON; Phase 3: pgvector image_vec
+    text_vec: Mapped[list | None] = mapped_column(EmbeddingVector(768), nullable=True)
     suggested: Mapped[bool] = mapped_column(Boolean, default=False)
 
 
@@ -130,3 +154,39 @@ class IdempotencyKey(Base):
     user_id: Mapped[str] = mapped_column(String(36), ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
     reel_id: Mapped[str] = mapped_column(String(36), ForeignKey("reels.id", ondelete="CASCADE"))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
+
+
+class Product(Base):
+    __tablename__ = "products"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
+    provider: Mapped[str] = mapped_column(String(64), default="dataset")
+    sku: Mapped[str] = mapped_column(String(128))
+    title: Mapped[str] = mapped_column(Text)
+    brand: Mapped[str] = mapped_column(String(128), default="Generic")
+    category: Mapped[str] = mapped_column(String(32), index=True)
+    subcategory: Mapped[str] = mapped_column(String(128), default="")
+    gender: Mapped[str] = mapped_column(String(16), default="unisex", index=True)
+    colours: Mapped[list | None] = mapped_column(JSON().with_variant(JSONB(), "postgresql"), nullable=True)
+    pattern: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    fit: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    price: Mapped[float] = mapped_column(Numeric(10, 2), default=0)
+    currency: Mapped[str] = mapped_column(String(8), default="INR")
+    sizes_available: Mapped[list | None] = mapped_column(JSON().with_variant(JSONB(), "postgresql"), nullable=True)
+    in_stock: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
+    image_url: Mapped[str | None] = mapped_column(Text, nullable=True)
+    buy_url: Mapped[str | None] = mapped_column(Text, nullable=True)
+    attribute_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+    text_vec: Mapped[list | None] = mapped_column(EmbeddingVector(768), nullable=True)
+    image_vec: Mapped[list | None] = mapped_column(EmbeddingVector(512), nullable=True)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
+
+
+class Match(Base):
+    __tablename__ = "matches"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
+    item_id: Mapped[str] = mapped_column(String(36), ForeignKey("detected_items.id", ondelete="CASCADE"), index=True)
+    product_id: Mapped[str] = mapped_column(String(36), ForeignKey("products.id", ondelete="CASCADE"))
+    tier: Mapped[str] = mapped_column(String(16), default="exact")
+    score: Mapped[float] = mapped_column(Float, default=0.0)
+    reason: Mapped[str | None] = mapped_column(Text, nullable=True)
+    rank: Mapped[int] = mapped_column(Integer, default=0)
