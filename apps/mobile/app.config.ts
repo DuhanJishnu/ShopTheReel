@@ -7,7 +7,7 @@ const config: ExpoConfig = {
   scheme: 'shopthereel',
   version: '0.1.0',
   orientation: 'portrait',
-  newArchEnabled: true,
+  ios: { bundleIdentifier: 'com.shopthereel.app' },
   android: {
     package: 'com.shopthereel.app',
     intentFilters: [
@@ -18,7 +18,7 @@ const config: ExpoConfig = {
       { action: 'SEND_MULTIPLE', data: { mimeType: 'image/*' }, category: ['DEFAULT'] },
     ],
   },
-  plugins: ['expo-router', 'expo-secure-store', 'expo-share-intent'],
+  plugins: ['expo-router', 'expo-secure-store', ['expo-share-intent', { disableIOS: true }]],
 };
 
 export default config;
