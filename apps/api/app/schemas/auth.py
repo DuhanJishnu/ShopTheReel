@@ -17,6 +17,10 @@ class RefreshIn(BaseModel):
     refresh_token: str
 
 
+class GoogleIn(BaseModel):
+    id_token: str
+
+
 class TokenPair(BaseModel):
     access_token: str
     refresh_token: str

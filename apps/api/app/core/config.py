@@ -19,6 +19,7 @@ class Settings(BaseSettings):
     jwt_refresh_days: int = 30
     gemini_api_key: str = ""
     gemini_vision_model: str = "gemini-3.8-flash"  # 2.5-flash retired (API 404, Oct 2026); names change, keep in env
+    google_allowed_client_ids: str = ""  # comma-separated OAuth client IDs accepted as token audience
     gemini_embed_model: str = "gemini-embedding-001"
     max_video_mb: int = 100
     max_video_seconds: int = 90

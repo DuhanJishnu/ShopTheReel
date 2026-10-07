@@ -28,6 +28,15 @@ Create the bucket + API token in the Cloudflare dashboard and set the four
 - Note: presigned URLs point at the storage host the API sees (`localstack:4566` in compose);
   from an emulator map it (e.g. `adb reverse` or host-mapped endpoint) so PUTs resolve.
 
+## Google sign-in setup (manual, Google Cloud Console)
+1. Create a project, configure the OAuth consent screen (External), add your Gmail as a test user.
+2. Credentials → Create **OAuth client ID (Android)**: package `com.shopthereel.app` + SHA-1 of your debug keystore:
+   `keytool -list -v -keystore %USERPROFILE%\.android\debug.keystore -alias androiddebugkey -storepass android`
+3. Create an **OAuth client ID (Web application)** — its ID is the token audience.
+4. Backend `.env`: `GOOGLE_ALLOWED_CLIENT_IDS=<web-client-id>` (comma-separated if several).
+5. App: set `EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID` and `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID` before `npx expo prebuild` / `expo start`.
+6. Flow: app opens Google (`useIdTokenAuthRequest`), sends the ID token to `POST /v1/auth/google`; the API verifies signature + audience + verified email, then creates/links the user and returns our JWT pair. Password login keeps working on linked accounts.
+
 ## Tests / lint
 - `make test` (pytest; SQLite by default, Postgres via `DATABASE_URL_TEST` in CI)
 - `make lint` (ruff + mypy + ESLint + tsc)

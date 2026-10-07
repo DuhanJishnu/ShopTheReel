@@ -29,8 +29,31 @@ async def register(session: AsyncSession, email: str, password: str) -> models.U
 
 async def authenticate(session: AsyncSession, email: str, password: str) -> models.User | None:
     user = await get_user_by_email(session, email)
-    if user is None or not security.verify_password(password, user.password_hash):
+    if user is None or not user.password_hash:
+        return None  # unknown email or Google-only account
+    if not security.verify_password(password, user.password_hash):
         return None
+    return user
+
+
+async def get_or_create_google_user(session: AsyncSession, sub: str, email: str) -> models.User:
+    """Find by google_sub, else link-or-create by verified email."""
+    res = await session.execute(select(models.User).where(models.User.google_sub == sub))
+    user = res.scalars().first()
+    if user is not None:
+        return user
+    user = await get_user_by_email(session, email)
+    if user is not None:
+        user.google_sub = sub  # link Google login to the existing email account
+        await session.commit()
+        await session.refresh(user)
+        return user
+    user = models.User(email=email.lower(), password_hash=None, google_sub=sub)
+    session.add(user)
+    await session.flush()
+    session.add(models.Profile(user_id=user.id))
+    await session.commit()
+    await session.refresh(user)
     return user
 
 

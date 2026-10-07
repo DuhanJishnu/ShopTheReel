@@ -20,6 +20,8 @@ export const api = {
     req('/v1/auth/register', { method: 'POST', body: JSON.stringify({ email, password }) }),
   login: (email: string, password: string) =>
     req('/v1/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) }),
+  google: (idToken: string) =>
+    req('/v1/auth/google', { method: 'POST', body: JSON.stringify({ id_token: idToken }) }),
   getProfile: (token: string) => req('/v1/me/profile', { method: 'GET', headers: { Authorization: `Bearer ${token}` } }),
   putProfile: (token: string, body: object) =>
     req('/v1/me/profile', { method: 'PUT', headers: { Authorization: `Bearer ${token}` }, body: JSON.stringify(body) }),
