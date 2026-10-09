@@ -29,3 +29,8 @@ async def get_pool() -> ArqRedis:
 async def enqueue_process(reel_id: str) -> None:
     pool = await get_pool()
     await pool.enqueue_job("process_reel", reel_id)
+
+
+async def enqueue_taste(feedback_id: str) -> None:
+    pool = await get_pool()
+    await pool.enqueue_job("update_taste", feedback_id)

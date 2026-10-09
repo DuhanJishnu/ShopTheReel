@@ -43,6 +43,30 @@ export const api = {
     req(`/v1/reels/${id}/items`, { method: 'GET', headers: { Authorization: `Bearer ${token}` } }),
   getOutfit: (token: string, id: string, tier = 'exact') =>
     req(`/v1/reels/${id}/outfit?tier=${tier}`, { method: 'GET', headers: { Authorization: `Bearer ${token}` } }),
+  feedback: (token: string, matchId: string, signal: 'like' | 'dislike' | 'wrong_item' | 'bought') =>
+    req(`/v1/matches/${matchId}/feedback`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ signal }),
+    }),
+  listLooks: (token: string) =>
+    req('/v1/looks', { method: 'GET', headers: { Authorization: `Bearer ${token}` } }),
+  createLook: (token: string, body: { title: string; reel_id?: string; match_ids: string[] }) =>
+    req('/v1/looks', { method: 'POST', headers: { Authorization: `Bearer ${token}` }, body: JSON.stringify(body) }),
+  shareLook: (token: string, id: string) =>
+    req(`/v1/looks/${id}/share`, { method: 'POST', headers: { Authorization: `Bearer ${token}` } }),
+  listBoards: (token: string) =>
+    req('/v1/boards', { method: 'GET', headers: { Authorization: `Bearer ${token}` } }),
+  createBoard: (token: string, name: string) =>
+    req('/v1/boards', { method: 'POST', headers: { Authorization: `Bearer ${token}` }, body: JSON.stringify({ name }) }),
+  addBoardLook: (token: string, boardId: string, lookId: string) =>
+    req(`/v1/boards/${boardId}/looks`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ look_id: lookId }),
+    }),
+  getStyleDNA: (token: string) =>
+    req('/v1/me/style-dna', { method: 'GET', headers: { Authorization: `Bearer ${token}` } }),
 };
 
 export const eventsUrl = (id: string) => `${BASE}/v1/reels/${id}/events`;

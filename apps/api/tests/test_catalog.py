@@ -122,5 +122,5 @@ async def test_retrieve_and_outfit_end_to_end(client, session_factory, monkeypat
     assert body["tier"] == "exact"
     assert body["items"][0]["match"]["product"]["price_display"].startswith("₹")
     assert body["total_price"] > 0
-    bad_tier = await client.get(f"/v1/reels/{rid}/outfit?tier=budget", headers=headers)
+    bad_tier = await client.get(f"/v1/reels/{rid}/outfit?tier=gold", headers=headers)
     assert bad_tier.status_code == 422

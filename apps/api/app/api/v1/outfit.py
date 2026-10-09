@@ -33,8 +33,8 @@ async def get_outfit(
     session: AsyncSession = Depends(get_session),  # type: ignore[arg-type]
     store=Depends(get_store),  # type: ignore[no-untyped-def]
 ):
-    if tier != "exact":
-        return problem(request, 422, "Unprocessable", "only the exact tier exists in Phase 3 (similar/budget land in Phase 4)")
+    if tier not in ("exact", "similar", "budget"):
+        return problem(request, 422, "Unprocessable", "tier must be exact|similar|budget")
     reel = await session.get(models.Reel, reel_id)
     if reel is None or reel.user_id != user.id:
         return problem(request, 404, "Not Found", "reel not found")
@@ -44,7 +44,7 @@ async def get_outfit(
         mres = await session.execute(
             select(models.Match, models.Product)
             .join(models.Product, models.Match.product_id == models.Product.id)
-            .where(models.Match.item_id == item.id, models.Match.tier == "exact")
+            .where(models.Match.item_id == item.id, models.Match.tier == tier)
             .order_by(models.Match.rank)
             .limit(1)
         )
@@ -58,6 +58,7 @@ async def get_outfit(
             if raw_img and "://" not in raw_img:
                 image_url = await store.presign_get(raw_img)  # storage key, not a public URL
             match = {
+                "id": match_row.id,
                 "product": {
                     "sku": product.sku, "brand": product.brand, "title": product.title,
                     "price": float(product.price), "price_display": _inr(float(product.price)),
@@ -73,5 +74,5 @@ async def get_outfit(
                      "crop_url": await store.presign_get(item.crop_key) if item.crop_key else None},
             "match": match, "suggested": item.suggested,
         })
-    return {"tier": "exact", "items": items_out, "total_price": round(total, 2),
+    return {"tier": tier, "items": items_out, "total_price": round(total, 2),
             "total_display": _inr(total), "currency": "INR"}

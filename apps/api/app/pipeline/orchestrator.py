@@ -14,11 +14,13 @@ from app.clients.vision import VisionClient, get_vision_client
 from app.core.logging import get_logger
 from app.db import models
 from app.db.session import SessionLocal
+from app.pipeline import compose as co
 from app.pipeline import crop_merge as cm
 from app.pipeline import embed as em
 from app.pipeline import extract as ex
 from app.pipeline import ingest as ing
 from app.pipeline import preprocess as pp
+from app.pipeline import rerank as rr
 from app.pipeline import retrieve as rt
 from app.services import reels as reel_service
 
@@ -64,6 +66,8 @@ async def run_pipeline(
         await em.run_embed(session, reel)
         await reel_service.set_status(session, reel, "matching")
         await rt.run_retrieve(session, reel)
+        await rr.run_rerank(session, reel)
+        await co.run_compose(session, reel)
         await reel_service.set_status(session, reel, "done")
         await session.commit()
         await reel_service.publish_event(reel.id, {"type": "done", "cache_hit": False})

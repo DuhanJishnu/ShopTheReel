@@ -4,14 +4,14 @@ from arq import run_worker
 
 from app.core.logging import configure_logging, get_logger
 from app.workers.queue import redis_settings
-from app.workers.tasks import process_reel
+from app.workers.tasks import process_reel, update_taste
 
 configure_logging()
 log = get_logger()
 
 
 async def startup(ctx: dict) -> None:
-    log.info("worker startup", functions=["process_reel"])
+    log.info("worker startup", functions=["process_reel", "update_taste"])
 
 
 async def shutdown(ctx: dict) -> None:
@@ -19,7 +19,7 @@ async def shutdown(ctx: dict) -> None:
 
 
 class WorkerSettings:
-    functions = [process_reel]
+    functions = [process_reel, update_taste]
     redis_settings = redis_settings()
     on_startup = startup
     on_shutdown = shutdown

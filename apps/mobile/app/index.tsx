@@ -27,6 +27,7 @@ export default function Home() {
       </Link>
       <Link href="/onboarding">Onboarding</Link>
       <Link href="/profile">Profile</Link>
+      <Link href="/saved">Saved</Link>
     </Screen>
   );
 }

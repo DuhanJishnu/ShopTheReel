@@ -190,3 +190,43 @@ class Match(Base):
     score: Mapped[float] = mapped_column(Float, default=0.0)
     reason: Mapped[str | None] = mapped_column(Text, nullable=True)
     rank: Mapped[int] = mapped_column(Integer, default=0)
+
+
+class Feedback(Base):
+    __tablename__ = "feedback"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
+    user_id: Mapped[str] = mapped_column(String(36), ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    match_id: Mapped[str] = mapped_column(String(36), ForeignKey("matches.id", ondelete="CASCADE"))
+    signal: Mapped[str] = mapped_column(String(16))  # like | dislike | wrong_item | bought
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
+
+
+class Look(Base):
+    __tablename__ = "looks"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
+    user_id: Mapped[str] = mapped_column(String(36), ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    reel_id: Mapped[str | None] = mapped_column(String(36), ForeignKey("reels.id", ondelete="SET NULL"), nullable=True)
+    title: Mapped[str] = mapped_column(String(128), default="Untitled look")
+    is_public: Mapped[bool] = mapped_column(Boolean, default=False)
+    share_slug: Mapped[str | None] = mapped_column(String(32), unique=True, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
+
+
+class LookItem(Base):
+    __tablename__ = "look_items"
+    look_id: Mapped[str] = mapped_column(String(36), ForeignKey("looks.id", ondelete="CASCADE"), primary_key=True)
+    match_id: Mapped[str] = mapped_column(String(36), ForeignKey("matches.id", ondelete="CASCADE"), primary_key=True)
+
+
+class Board(Base):
+    __tablename__ = "boards"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
+    user_id: Mapped[str] = mapped_column(String(36), ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    name: Mapped[str] = mapped_column(String(128))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
+
+
+class BoardLook(Base):
+    __tablename__ = "board_looks"
+    board_id: Mapped[str] = mapped_column(String(36), ForeignKey("boards.id", ondelete="CASCADE"), primary_key=True)
+    look_id: Mapped[str] = mapped_column(String(36), ForeignKey("looks.id", ondelete="CASCADE"), primary_key=True)

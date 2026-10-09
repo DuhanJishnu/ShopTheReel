@@ -22,13 +22,12 @@ from typing import Any, cast
 from sqlalchemy import select
 
 from app.clients.embeddings import HashedImageEmbedder, HashedTextEmbedder
+from app.core.config import REPO_ROOT
 from app.core.logging import get_logger
 from app.db import models
 from app.db.session import SessionLocal
 
 log = get_logger()
-# <repo>/apps/api/app/catalog/ingest.py -> parents[4] is the repo root.
-REPO_ROOT = Path(__file__).resolve().parents[4]
 PROGRESS = REPO_ROOT / "data/seed-progress.json"
 BUY_TEMPLATE = "https://partner.example/p/{sku}"  # Demo partner: never a real purchase link.
 

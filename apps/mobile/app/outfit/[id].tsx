@@ -11,6 +11,7 @@ import { useAuth } from '../../src/store/auth';
 type OutfitItem = {
   item: { id: string; category: string; subcategory: string; colours: string[]; confidence: number; crop_url: string | null };
   match: {
+    id: string;
     product: { sku: string; brand: string; title: string; price_display: string; image_url: string | null; buy_url: string | null };
     match_pct: number;
     reason: string | null;
@@ -18,7 +19,7 @@ type OutfitItem = {
   suggested: boolean;
 };
 
-// Outfit result (Phase 3: exact tier; Similar/Budget arrive in Phase 4).
+// Outfit result with live tiers (Exact / Similar / Budget) and feedback actions.
 export default function Outfit() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { accessToken } = useAuth();
@@ -28,34 +29,46 @@ export default function Outfit() {
   const [total, setTotal] = useState('');
   const [note, setNote] = useState<string | null>(null);
 
-  const load = useCallback(async () => {
-    if (!accessToken || !id) {
-      setState('error');
-      return;
-    }
-    setState('loading');
-    try {
-      const res = await api.getOutfit(accessToken, id, 'exact');
-      setItems(res.items);
-      setTotal(res.total_display);
-      setState('ready');
-    } catch {
-      setState('error');
-    }
-  }, [accessToken, id]);
+  const load = useCallback(
+    async (name = 'exact') => {
+      if (!accessToken || !id) {
+        setState('error');
+        return;
+      }
+      setState('loading');
+      try {
+        const res = await api.getOutfit(accessToken, id, name);
+        setItems(res.items);
+        setTotal(res.total_display);
+        setState('ready');
+      } catch {
+        setState('error');
+      }
+    },
+    [accessToken, id],
+  );
 
   useEffect(() => {
     // Initial fetch on mount.
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    load();
+    load('exact');
   }, [load]);
+
+  const sendFeedback = async (matchId: string, signal: 'like' | 'dislike' | 'wrong_item') => {
+    if (!accessToken) return;
+    try {
+      await api.feedback(accessToken, matchId, signal);
+    } catch {
+      setNote('Feedback failed — try again');
+    }
+  };
 
   if (state === 'loading') return <ActivityIndicator style={{ marginTop: 80 }} color={colors.amber} />;
   if (state === 'error')
     return (
       <Screen>
         <Text style={s.title}>Couldn’t load the outfit</Text>
-        <Button title="Retry" onPress={load} />
+        <Button title="Retry" onPress={() => load(tier.toLowerCase())} />
       </Screen>
     );
 
@@ -66,7 +79,8 @@ export default function Outfit() {
         value={tier}
         onChange={(v) => {
           setTier(v);
-          setNote(v === 'Exact' ? null : 'Similar and Budget tiers land in Phase 4');
+          setNote(null);
+          void load(v.toLowerCase());
         }}
       />
       {note ? <Text style={s.note}>{note}</Text> : null}
@@ -91,7 +105,13 @@ export default function Outfit() {
             <Text style={s.brand}>{match.product.brand}</Text>
             <Text style={s.name}>{match.product.title}</Text>
             <Text style={s.price}>{match.product.price_display}</Text>
+            {match.reason ? <Text style={s.reason}>{match.reason}</Text> : null}
             <Text style={s.partner}>Demo partner — link opens the mock retailer</Text>
+            <View style={s.actions}>
+              <Button variant="text" title="♡" onPress={() => void sendFeedback(match.id, 'like')} />
+              <Button variant="text" title="✕" onPress={() => void sendFeedback(match.id, 'dislike')} />
+              <Button variant="text" title="Wrong item?" onPress={() => void sendFeedback(match.id, 'wrong_item')} />
+            </View>
             <Button
               title="Buy"
               onPress={() => {
@@ -129,7 +149,9 @@ const s = StyleSheet.create({
   brand: { color: colors.textSecondary, fontSize: 11, letterSpacing: 1 },
   name: { color: colors.textPrimary, fontSize: 15, fontWeight: '600' },
   price: { color: colors.amber, fontSize: 16, fontWeight: '600', marginVertical: 4 },
+  reason: { color: colors.textSecondary, fontSize: 12, fontStyle: 'italic', marginBottom: 4 },
   partner: { color: colors.textDisabled, fontSize: 11, fontStyle: 'italic', marginBottom: 8 },
+  actions: { flexDirection: 'row', gap: 4, marginBottom: 4 },
   total: {
     backgroundColor: colors.surfaceRaised,
     borderTopWidth: 1,

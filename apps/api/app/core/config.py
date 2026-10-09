@@ -4,10 +4,20 @@ from pathlib import Path
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-# <repo>/apps/api/app/core/config.py -> parents[4] is the repo root, so CLIs
-# find .env no matter which directory they run from. Missing file = defaults
-# (containers get real values as environment variables instead).
-REPO_ROOT = Path(__file__).resolve().parents[4]
+
+# <repo>/apps/api/app/core/config.py lives four levels below the repo root, so
+# CLIs find .env no matter which directory they run from. In Docker (/srv)
+# there is no marker, so we fall back to CWD and rely on real environment
+# variables (a missing env file is silently ignored).
+def _repo_root() -> Path:
+    here = Path(__file__).resolve()
+    for parent in [here, *here.parents]:
+        if (parent / ".env").exists() or (parent / "apps" / "api" / "pyproject.toml").exists():
+            return parent
+    return Path.cwd()
+
+
+REPO_ROOT = _repo_root()
 
 
 class Settings(BaseSettings):
@@ -28,6 +38,7 @@ class Settings(BaseSettings):
     gemini_vision_model: str = "gemini-3.8-flash"  # 2.5-flash retired (API 404, Oct 2026); names change, keep in env
     google_allowed_client_ids: str = ""  # comma-separated OAuth client IDs accepted as token audience
     gemini_embed_model: str = "gemini-embedding-001"
+    llm_rerank: bool = False
     max_video_mb: int = 100
     max_video_seconds: int = 90
 

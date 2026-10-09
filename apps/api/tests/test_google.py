@@ -23,7 +23,8 @@ def _mock_verify(monkeypatch, claims=None, exc=None):
     monkeypatch.setattr(settings, "google_allowed_client_ids", "web-id")
 
 
-async def test_google_unconfigured_returns_501(client):
+async def test_google_unconfigured_returns_501(client, monkeypatch):
+    monkeypatch.setattr(settings, "google_allowed_client_ids", "")
     r = await client.post("/v1/auth/google", json={"id_token": "x"})
     assert r.status_code == 501
 
